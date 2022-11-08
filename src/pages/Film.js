@@ -46,7 +46,6 @@ const Film = ({ navigation, route: { params } }) => {
   const [loadFilm, { loading, error, called }] = useLazyQuery(GET_FILM, {
     nextFetchPolicy: 'network-only',
     onCompleted: data => {
-      console.log(data);
       setFilm(data.film);
       const { pageInfo, characters: newCharacters } =
         data.film.characterConnection;
@@ -57,9 +56,12 @@ const Film = ({ navigation, route: { params } }) => {
   });
 
   useEffect(() => {
+    if (!params.id || called) {
+      return;
+    }
+
     loadFilm({ variables: { id: params.id, after } });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [params.id, called, loadFilm, after]);
 
   const handlePressCharacter = useCallback(
     ({ id, name }) => {
