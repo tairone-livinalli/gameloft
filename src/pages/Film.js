@@ -65,7 +65,7 @@ const Film = ({ navigation, route: { params } }) => {
 
   const handlePressCharacter = useCallback(
     ({ id, name }) => {
-      navigation.navigate('Character', {
+      navigation.push('Character', {
         id,
         name,
       });

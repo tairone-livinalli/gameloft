@@ -28,7 +28,7 @@ const Films = ({ navigation }) => {
 
   const handlePressFilm = useCallback(
     ({ id, title }) => {
-      navigation.navigate('Film', {
+      navigation.push('Film', {
         id,
         title,
       });
