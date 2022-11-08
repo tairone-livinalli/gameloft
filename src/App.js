@@ -15,8 +15,6 @@ if (__DEV__) {
   NativeModules.DevSettings.setIsDebuggingRemotely(true);
 }
 
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
 const App = () => (
   <NavigationContainer>
     <SafeAreaView style={{ backgroundColor: Colors.black, flex: 1 }}>

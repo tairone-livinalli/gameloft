@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -23,10 +23,20 @@ const GET_ALL_FILMS = gql`
   }
 `;
 
-const Films = () => {
-  const { loading, error, data } = useQuery(GET_ALL_FILMS);
+const Films = ({ navigation }) => {
+  const { loading, error, data, refetch } = useQuery(GET_ALL_FILMS);
 
-  const FilmItem = ({ item: { title, openingCrawl, releaseDate } }) => (
+  const handlePressFilm = useCallback(
+    ({ id, title }) => {
+      navigation.navigate('Film', {
+        id,
+        title,
+      });
+    },
+    [navigation],
+  );
+
+  const FilmItem = ({ item: { id, title, openingCrawl, releaseDate } }) => (
     <TouchableOpacity
       style={{
         flex: 1,
@@ -35,7 +45,8 @@ const Films = () => {
         backgroundColor: '#171717',
         width: '100%',
         marginBottom: 10,
-      }}>
+      }}
+      onPress={() => handlePressFilm({ id, title })}>
       <Text
         style={{
           fontSize: 24,
@@ -83,6 +94,21 @@ const Films = () => {
         <Text style={{ fontSize: 16, color: '#FF3333' }}>
           Something is wrong, please try again.
         </Text>
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 8,
+            height: 50,
+            width: '80%',
+            backgroundColor: 'gold',
+            marginTop: 8,
+          }}
+          onPress={() => refetch()}>
+          <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>
+            Retry
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
