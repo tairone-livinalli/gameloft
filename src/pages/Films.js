@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -8,6 +8,9 @@ import {
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { gql, useQuery } from '@apollo/client';
+import Animated, { BounceInLeft } from 'react-native-reanimated';
+
+import { ArrowDownIcon, ArrowUpIcon } from '../icons';
 
 const GET_ALL_FILMS = gql`
   query getAllFilms {
@@ -24,7 +27,23 @@ const GET_ALL_FILMS = gql`
 `;
 
 const Films = ({ navigation }) => {
-  const { loading, error, data, refetch } = useQuery(GET_ALL_FILMS);
+  const [films, setFilms] = useState([]);
+  const [isAscendingOrder, setIsAscendingOrder] = useState(true);
+  const { loading, error, refetch } = useQuery(GET_ALL_FILMS, {
+    onCompleted: data => {
+      const map = data.allFilms.films.map(film => ({
+        ...film,
+        timestamp: new Date(film.releaseDate).getTime(),
+      }));
+
+      setFilms([...map.sort((a, b) => a.timestamp - b.timestamp)]);
+    },
+  });
+
+  const handlePressSort = useCallback(() => {
+    setIsAscendingOrder(!isAscendingOrder);
+    setFilms([...films.reverse()]);
+  }, [isAscendingOrder, films]);
 
   const handlePressFilm = useCallback(
     ({ id, title }) => {
@@ -37,32 +56,35 @@ const Films = ({ navigation }) => {
   );
 
   const FilmItem = ({ item: { id, title, openingCrawl, releaseDate } }) => (
-    <TouchableOpacity
-      style={{
-        flex: 1,
-        borderRadius: 8,
-        padding: 20,
-        backgroundColor: '#171717',
-        width: '100%',
-        marginBottom: 10,
-      }}
-      onPress={() => handlePressFilm({ id, title })}>
-      <Text
+    <Animated.View entering={BounceInLeft}>
+      <TouchableOpacity
         style={{
-          fontSize: 24,
-          fontWeight: '700',
-          color: Colors.light,
-          marginBottom: 40,
-        }}>
-        {title}
-      </Text>
-      <Text style={{ textAlign: 'justify', fontSize: 18, color: Colors.light }}>
-        {openingCrawl?.slice(0, 49)}...
-      </Text>
-      <Text style={{ textAlign: 'right', color: Colors.light }}>
-        {releaseDate}
-      </Text>
-    </TouchableOpacity>
+          flex: 1,
+          borderRadius: 8,
+          padding: 20,
+          backgroundColor: '#171717',
+          width: '100%',
+          marginBottom: 10,
+        }}
+        onPress={() => handlePressFilm({ id, title })}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: '700',
+            color: Colors.light,
+            marginBottom: 40,
+          }}>
+          {title}
+        </Text>
+        <Text
+          style={{ textAlign: 'justify', fontSize: 18, color: Colors.light }}>
+          {openingCrawl?.slice(0, 49)}...
+        </Text>
+        <Text style={{ textAlign: 'right', color: Colors.light }}>
+          {releaseDate}
+        </Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 
   if (loading) {
@@ -122,9 +144,27 @@ const Films = ({ navigation }) => {
         flex: 1,
         padding: 20,
       }}>
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#fff',
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+          borderRadius: 30,
+          height: 60,
+          width: 60,
+          zIndex: 10,
+        }}
+        onPress={handlePressSort}>
+        {isAscendingOrder ? (
+          <ArrowDownIcon fill="#000" />
+        ) : (
+          <ArrowUpIcon fill="#000" />
+        )}
+      </TouchableOpacity>
       <FlatList
         style={{ flex: 1, width: '100%' }}
-        data={data.allFilms.films}
+        data={films}
         renderItem={FilmItem}
         keyExtractor={item => item.id}
       />

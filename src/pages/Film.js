@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import { gql, useLazyQuery } from '@apollo/client';
+import Animated, { BounceInLeft } from 'react-native-reanimated';
 
 const GET_FILM = gql`
   query getFilm($id: ID!, $after: String!) {
@@ -74,27 +75,29 @@ const Film = ({ navigation, route: { params } }) => {
   );
 
   const CharacterItem = ({ item: { id, name } }) => (
-    <TouchableOpacity
-      style={{
-        flex: 1,
-        borderRadius: 8,
-        padding: 20,
-        height: 80,
-        backgroundColor: '#171717',
-        marginBottom: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      onPress={() => handlePressCharacter({ id, name })}>
-      <Text
+    <Animated.View entering={BounceInLeft}>
+      <TouchableOpacity
         style={{
-          fontSize: 24,
-          fontWeight: '700',
-          color: '#fff',
-        }}>
-        {name}
-      </Text>
-    </TouchableOpacity>
+          flex: 1,
+          borderRadius: 8,
+          padding: 20,
+          height: 80,
+          backgroundColor: '#171717',
+          marginBottom: 10,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onPress={() => handlePressCharacter({ id, name })}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: '700',
+            color: '#fff',
+          }}>
+          {name}
+        </Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 
   const FilmInfo = () => {
