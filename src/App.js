@@ -5,6 +5,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import Routes from './routes';
+import RootContext from './context';
 
 const client = new ApolloClient({
   uri: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
@@ -17,12 +18,14 @@ if (__DEV__) {
 
 const App = () => (
   <NavigationContainer>
-    <SafeAreaView style={{ backgroundColor: Colors.black, flex: 1 }}>
-      <StatusBar barStyle={'light-content'} />
-      <ApolloProvider client={client}>
-        <Routes />
-      </ApolloProvider>
-    </SafeAreaView>
+    <RootContext>
+      <SafeAreaView style={{ backgroundColor: Colors.black, flex: 1 }}>
+        <StatusBar barStyle={'light-content'} />
+        <ApolloProvider client={client}>
+          <Routes />
+        </ApolloProvider>
+      </SafeAreaView>
+    </RootContext>
   </NavigationContainer>
 );
 

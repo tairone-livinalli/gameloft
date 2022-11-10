@@ -1,30 +1,10 @@
 import React, { useCallback } from 'react';
 import { FlatList, Text, TouchableOpacity } from 'react-native';
-
-const characters = [
-  {
-    id: 'cGVvcGxlOjE=',
-    name: 'Luke Skywalker',
-  },
-  {
-    id: 'cGVvcGxlOjI=',
-    name: 'C-3PO',
-  },
-  {
-    id: 'cGVvcGxlOjM=',
-    name: 'R2-D2',
-  },
-  {
-    id: 'cGVvcGxlOjQ=',
-    name: 'Darth Vader',
-  },
-  {
-    id: 'cGVvcGxlOjU=',
-    name: 'Leia Organa',
-  },
-];
+import { useFavorites } from '../hooks/useFavorites';
 
 const Favorites = ({ navigation }) => {
+  const { favorites } = useFavorites();
+
   const handlePressCharacter = useCallback(
     ({ id, name }) => {
       navigation.push('Character', {
@@ -37,6 +17,7 @@ const Favorites = ({ navigation }) => {
 
   const CharacterItem = ({ item: { id, name } }) => (
     <TouchableOpacity
+      testID={`${id}-button`}
       style={{
         flex: 1,
         borderRadius: 8,
@@ -49,6 +30,7 @@ const Favorites = ({ navigation }) => {
       }}
       onPress={() => handlePressCharacter({ id, name })}>
       <Text
+        testID={id}
         style={{
           fontSize: 24,
           fontWeight: '700',
@@ -62,7 +44,7 @@ const Favorites = ({ navigation }) => {
   return (
     <FlatList
       style={{ flex: 1, backgroundColor: '#000', padding: 20 }}
-      data={characters}
+      data={favorites}
       renderItem={CharacterItem}
       keyExtractor={item => item.id}
     />
