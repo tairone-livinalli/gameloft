@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Films from './Films';
-import Favorites from './Favorites';
+import Films from './FilmsPage';
+import Favorites from './FavoritesPage';
 import { HomeIcon, HeartIcon } from '../icons';
 
 const Tab = createBottomTabNavigator();
