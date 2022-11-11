@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
 
